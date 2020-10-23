@@ -7,10 +7,11 @@
  */
 export default {
   dev: {
-    '/api/': {
-      target: 'https://preview.pro.ant.design',
+    '/api': {
+      target: 'http://local.finecoffee.com:8811',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/api': '/api' },
+      logLevel: 'debug',
     },
   },
   test: {

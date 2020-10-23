@@ -41,6 +41,15 @@ export interface ModelType {
   };
 }
 
+export interface TokenType {
+  // key: "Authorization
+  key: string;
+  repeat: boolean;
+  token: string;
+  type: 'apiKey';
+  void: boolean;
+}
+
 const Model: ModelType = {
   namespace: 'userAndlogin',
 
@@ -51,12 +60,14 @@ const Model: ModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.token) {
+        response.status = 'ok';
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+
         message.success('登录成功！');
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -84,7 +95,8 @@ const Model: ModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      console.log('payload', payload);
+      setAuthority(payload);
       return {
         ...state,
         status: payload.status,
